@@ -5,8 +5,11 @@
 这是一个医药信息检索 + AI健康咨询的综合性 Web 应用，核心价值在于：  
 
 ✅ 降低用户获取药品信息的门槛 
+
 ✅ 提供智能化的健康知识服务 
+
 ✅ 通过模糊匹配技术提升搜索体验 
+
 ✅ 结合 AI 大模型实现智能问答 
 
 项目采用经典的 MVC 架构，代码结构清晰，功能模块划分合理，具有良好的扩展性。
@@ -56,7 +59,6 @@ https://github.com/PaddlePaddle/FastDeploy/blob/develop/docs/zh/supported_models
 
 在部署ERNIE-4.5-21B-A3B-Paddle之后，会得到AI Studio 访问令牌
 
-解压压缩包
 
 将访问令牌信息填入info.yaml文件中
 
