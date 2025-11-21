@@ -1,0 +1,24 @@
+--- 检查 Windows 服务状态 ---
+
+SERVICE_NAME: MongoDB
+        TYPE               : 10  WIN32_OWN_PROCESS
+        STATE              : 4  RUNNING
+                                (STOPPABLE, NOT_PAUSABLE, ACCEPTS_PRESHUTDOWN)
+        WIN32_EXIT_CODE    : 0  (0x0)
+        SERVICE_EXIT_CODE  : 0  (0x0)
+        CHECKPOINT         : 0x0
+        WAIT_HINT          : 0x0
+
+✓ 服务 'MongoDB' 正在运行。
+
+--- 检查端口 localhost:27017 是否开放 ---
+✓ 端口 localhost:27017 是开放的，MongoDB 可能正在监听。
+
+--- 尝试连接 MongoDB 并获取信息 ---
+正在尝试连接到 MongoDB 服务器: localhost:27017 ...
+✓ 成功连接到 MongoDB 服务器!
+  - 服务器版本: 4.2.23
+  - 连接地址: localhost:27017
+  - Hostname: DESKTOP-VAOCO73
+  - Uptime (seconds): 9575.0
+  - Connections: 2 current, 999998 available

@@ -1,0 +1,18 @@
+--- Environment Info Exported on: 2025-11-21 10:57:16 ---
+
+Python Information:
+--------------------
+Python_Version: 3.12.7 | packaged by Anaconda, Inc. | (main, Oct  4 2024, 13:17:27) [MSC v.1929 64 bit (AMD64)]
+Python_Executable_Path: G:\Conda\python.exe
+Python_Version_Info: sys.version_info(major=3, minor=12, micro=7, releaselevel='final', serial=0)
+
+System Information:
+--------------------
+OS: Windows
+OS_Version: 10.0.19045
+Architecture: 64bit
+Machine: AMD64
+Processor: Intel64 Family 6 Model 165 Stepping 2, GenuineIntel
+Node (Hostname): DESKTOP-VAOCO73
+Platform: Windows-10-10.0.19045-SP0
+

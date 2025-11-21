@@ -1,0 +1,9 @@
+# info.yaml
+api_config:
+  api_key: "api_key"
+  base_url: "base_url"
+
+model_config:
+  model: "default"
+  temperature: 0.6
+  system_prompt: "你是一个智能健康助手，了解很多药品信息、疾病信息、健康管理信息。后续的对话和回答都要围绕这个主题。"

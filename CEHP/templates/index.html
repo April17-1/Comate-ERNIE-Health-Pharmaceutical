@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>文心健康医药 Fuzzy Matching 系统</title>
+
+  <!-- layui.css -->
+  <link href="//unpkg.com/layui@2.9.7/dist/css/layui.css" rel="stylesheet">
+
+  <style>
+    /* ========== 全局基础 ========== */
+    body {
+      background: #f5f7fb;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+                   Arial, "PingFang SC", "Microsoft Yahei", sans-serif;
+      margin: 0;
+    }
+
+    /* ========== 顶部导航 ========== */
+    .app-header {
+      background: #1e9fff;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .app-header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .app-title {
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .app-title-sub {
+      font-size: 12px;
+      opacity: .85;
+    }
+    .header-right {
+      font-size: 12px;
+    }
+    .header-right a {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    /* ========== 页面主区域 & 卡片 ========== */
+    .app-main {
+      max-width: 1200px;
+      margin: 24px auto 40px;
+      padding: 0 16px;
+      box-sizing: border-box;
+    }
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(15, 35, 95, 0.06);
+      padding: 20px 24px;
+      box-sizing: border-box;
+    }
+    .card + .card {
+      margin-top: 18px;
+    }
+
+    /* ========== 说明卡片 & 文心助手入口 ========== */
+    .intro-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .intro-text ul {
+      margin: 0;
+      padding-left: 18px;
+      color: #555;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    /* 文心健康助手：小卡片样式 */
+    .assistant-panel {
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 10px 18px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #4facfe 0%, #00c7ff 45%, #38f9d7 100%);
+      color: #fff;
+      text-decoration: none;
+      box-shadow: 0 8px 22px rgba(0, 175, 255, 0.35);
+      transition: all .2s ease;
+      min-width: 210px;
+      cursor: pointer;
+    }
+    .assistant-main {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .assistant-sub {
+      font-size: 12px;
+      opacity: .9;
+    }
+    .assistant-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.18);
+      margin-left: auto;
+    }
+    .assistant-panel:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 26px rgba(0, 175, 255, 0.48);
+    }
+
+    /* ========== 搜索卡片 ========== */
+    .search-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .search-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #222;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .search-subtitle {
+      font-size: 12px;
+      color: #999;
+    }
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .search-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: #f0f6ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1e9fff;
+      flex-shrink: 0;
+    }
+    .search-input-wrap {
+      flex: 1;
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      height: 48px;
+      border-radius: 12px;
+      border: 1px solid #e3e7f0;
+      padding: 0 14px;
+      font-size: 15px;
+      box-sizing: border-box;
+      transition: all .15s ease;
+      background: #fff;
+    }
+    .search-input:focus {
+      border-color: #1e9fff;
+      box-shadow: 0 0 0 2px rgba(30,159,255,.15);
+      outline: none;
+    }
+    .search-btn {
+      height: 48px;
+      padding: 0 28px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    /* ========== 结果卡片 & 表格 ========== */
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .result-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #222;
+    }
+    .result-meta {
+      font-size: 12px;
+      color: #999;
+    }
+    #drug-table {
+      margin-top: 6px;
+    }
+
+    /* 药品名称链接样式 */
+    .drug-link {
+      color: #1e88e5;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .drug-link:hover {
+      color: #0d47a1;
+      text-decoration: underline;
+    }
+
+    /* 药品详情弹窗整体容器 */
+    .drug-detail-box {
+      padding: 18px 22px;
+      background: #f9fafb;
+      height: 100%;
+      box-sizing: border-box;
+      overflow-y: auto;
+      font-size: 14px;
+      color: #111827;
+    }
+
+    .drug-detail-header {
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .drug-consult-btn {
+      border: none;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(34,197,94,0.35);
+      white-space: nowrap;
+    }
+    .drug-consult-btn:hover {
+      background: linear-gradient(135deg, #16a34a, #15803d);
+    }
+
+    .drug-detail-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 4px;
+    }
+    .drug-detail-subtitle {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .drug-detail-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .drug-detail-row {
+      display: flex;
+      padding: 6px 0;
+      border-bottom: 1px dashed #e5e7eb;
+    }
+    .drug-detail-label {
+      width: 96px;
+      flex-shrink: 0;
+      font-weight: 600;
+      color: #374151;
+    }
+    .drug-detail-value {
+      flex: 1;
+      color: #111827;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    /* 原始 JSON 区域 */
+    .drug-detail-raw {
+      margin-top: 16px;
+      padding: 10px 12px 12px;
+      background: #111827;
+      color: #e5e7eb;
+      border-radius: 8px;
+      font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+    }
+    .drug-detail-raw-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    .drug-json-copy-btn {
+      border: none;
+      background: rgba(55,65,81,0.7);
+      color: #e5e7eb;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .drug-json-copy-btn:hover {
+      background: rgba(107,114,128,0.9);
+    }
+    .drug-detail-raw pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* ========== 文心助手弹窗 ========== */
+    .assistant-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .assistant-modal {
+      width: 900px;
+      max-width: 95vw;
+      height: 600px;
+      max-height: 90vh;
+      background: #ffffff;
+      border-radius: 22px;
+      box-shadow: 0 22px 50px rgba(15, 23, 42, 0.35);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: width 0.18s ease, height 0.18s ease, border-radius 0.18s ease;
+    }
+    .assistant-modal-large {
+      width: 1100px;
+      height: 720px;
+      max-width: 98vw;
+      max-height: 92vh;
+    }
+    .assistant-modal-full {
+      width: 100vw;
+      height: 100vh;
+      max-width: 100vw;
+      max-height: 100vh;
+      border-radius: 0;
+    }
+    .assistant-modal-header {
+      height: 54px;
+      padding: 0 12px 0 18px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(90deg, #eff6ff, #ecfeff);
+    }
+    .assistant-modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .assistant-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .assistant-modal-btn {
+      border: none;
+      background: transparent;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      color: #6b7280;
+      padding: 4px 6px;
+      border-radius: 999px;
+      transition: background 0.12s, color 0.12s, transform 0.08s;
+    }
+    .assistant-modal-btn:hover {
+      background: rgba(15, 23, 42, 0.06);
+      color: #111827;
+      transform: translateY(-1px);
+    }
+    .assistant-modal-body {
+      flex: 1;
+      background: #f3f4f6;
+    }
+    .assistant-modal-body iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .app-header-inner {
+        padding-inline: 12px;
+      }
+      .card {
+        padding-inline: 16px;
+      }
+      .search-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .search-btn {
+        width: 100%;
+      }
+      .intro-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .assistant-modal,
+      .assistant-modal-large,
+      .assistant-modal-full {
+        width: 100vw;
+        max-width: 100vw;
+        height: 80vh;
+        max-height: 80vh;
+        border-radius: 18px 18px 0 0;
+        margin: 0;
+        align-self: flex-end;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 顶部导航 -->
+  <header class="app-header">
+    <div class="app-header-inner">
+      <div class="app-title">
+        <span class="layui-icon layui-icon-component" style="font-size: 24px;"></span>
+        <div>
+          <div>文心健康医药 Fuzzy Matching 系统</div>
+          <div class="app-title-sub">面向医药场景的智能相似检索与用药参考</div>
+        </div>
+      </div>
+      <div class="header-right">
+        开发者：
+        <a href="https://april17-1.github.io/" target="_blank">Apirl</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <!-- 说明卡片 -->
+    <section class="card intro-card">
+      <div class="intro-content">
+        <div class="intro-text">
+          <ul>
+            <li>支持通过药品名称模糊匹配，快速定位相关处方信息。</li>
+            <li>适用于用药参考与知识检索场景，结果仅供专业人员判读。</li>
+          </ul>
+        </div>
+
+        <a href="javascript:void(0);" id="assistant-open-btn" class="assistant-panel">
+          <div class="assistant-main">
+            <i class="layui-icon layui-icon-username" style="font-size: 18px;"></i>
+            <span>文心健康助手</span>
+            <span class="assistant-tag">智能咨询</span>
+          </div>
+          <div class="assistant-sub">
+            7×24 小时健康问答 · 症状自查与用药建议
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 搜索卡片 -->
+    <section class="card">
+      <div class="search-card-header">
+        <div>
+          <div class="search-title">
+            <span class="layui-icon layui-icon-search"></span>
+            药品智能搜索
+          </div>
+          <div class="search-subtitle">输入药品名称或关键字，例如：“感冒灵”“布洛芬”等</div>
+        </div>
+      </div>
+
+      <form id="search-form" action="/search" method="get">
+        <div class="search-bar">
+          <div class="search-icon">
+            <i class="layui-icon layui-icon-form" style="font-size: 24px;"></i>
+          </div>
+
+          <div class="search-input-wrap">
+            <input
+              id="search-input"
+              name="query"
+              type="text"
+              maxlength="100"
+              placeholder="输入需要查询的药品名称"
+              class="search-input"
+            >
+          </div>
+
+          <button class="layui-btn layui-btn-normal search-btn" type="submit">
+            搜索
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 结果卡片 -->
+    <section class="card">
+      <div class="result-header">
+        <div class="result-title">搜索结果</div>
+        <div class="result-meta" id="result-meta">支持排序与分页浏览</div>
+      </div>
+
+      <table class="layui-hide" id="drug-table" lay-filter="drugTableFilter"></table>
+    </section>
+
+  </main>
+
+  <!-- 文心健康助手弹窗 -->
+  <div id="assistant-modal-overlay" class="assistant-modal-overlay" style="display: none;">
+    <div class="assistant-modal" id="assistant-modal" data-size="normal">
+      <div class="assistant-modal-header">
+        <div class="assistant-modal-title">
+          <span>💊</span>
+          <span>文心健康助手</span>
+        </div>
+        <div class="assistant-header-actions">
+          <button class="assistant-modal-btn" id="assistant-modal-resize" title="调整窗口大小">⬜</button>
+          <button class="assistant-modal-btn" id="assistant-modal-close" aria-label="关闭">×</button>
+        </div>
+      </div>
+      <div class="assistant-modal-body">
+        <iframe src="/chat_embed" frameborder="0" referrerpolicy="no-referrer"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- 输入长度校验 -->
+  <script>
+    document.getElementById("search-form").addEventListener("submit", function(event) {
+      var input = document.getElementById("search-input");
+      if (input.value.length > 100) {
+        alert("输入的字符数超过限制，请重新输入！");
+        event.preventDefault();
+      }
+    });
+  </script>
+
+  <!-- layui.js -->
+  <script src="//unpkg.com/layui@2.9.8/dist/layui.js"></script>
+  <script>
+    layui.use(['table', 'layer'], function(){
+      var table = layui.table;
+      var layer = layui.layer;
+  
+      // ========= 1. 先取静态 JSON，再用 data 做前端分页 =========
+      fetch('/static/json/2/table/demo3.json')
+        .then(function (res) { return res.json(); })
+        .then(function (res) {
+          var rows = (res.rows && res.rows.item) || [];
+  
+          table.render({
+            elem: '#drug-table',
+            data: rows,          // 用 data，而不是 url
+            page: {
+              limit: 10,
+              limits: [10, 20, 50]
+            },
+            cols: [[
+              {field:'处方类型', title:'处方类型', width:130, fixed:'left', unresize:true, sort:true},
+              {
+                field:'药品名称',
+                title:'药品名称',
+                width:180,
+                templet: function(d){
+                  var name = (d['药品名称'] || '').replace(/"/g,'&quot;');
+                  return '<a href="javascript:;" class="drug-link" data-name="' + name + '">' + name + '</a>';
+                }
+              },
+              {field:'储藏方法', title:'储藏方法', width:150},
+              {field:'用法用量', title:'用法用量', width:300, sort:true},
+              {field:'适应症',   title:'适应症',   width:450, sort:true},
+              {field:'副作用',   title:'副作用'},
+              {field:'禁忌',     title:'禁忌',     width:150},
+              {field:'detail_json', title:'detail_json', hide:true}
+            ]],
+            height: 420,
+            done: function(resData, curr, count){
+              var meta = document.getElementById('result-meta');
+              if (meta && typeof count === 'number') {
+                meta.innerText = '共 ' + count + ' 条记录，当前第 ' + curr + ' 页';
+              }
+            }
+          });
+        });
+  
+      // ========= 通用转义 =========
+      function escapeHtml(str) {
+        if (str == null) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+  
+      // ========= 构造药品详情弹框 HTML =========
+      // 构造弹窗内容（上面字段 + 下面黑框 JSON，全量展示字段）
+      function buildDrugDetailHtml(data) {
+        data = data || {};
+        var name     = data['药品名称'] || '未命名药品';
+        var approval = data['批准文号'] || data['批号'] || '——';
+
+        // 先构造一个“干净的对象”：去掉 detail_json 本身
+        var rawObj = Object.assign({}, data);
+        delete rawObj['detail_json'];
+
+        var html = '';
+        html += '<div class="drug-detail-box">';
+
+        // 顶部：左边标题 + 副标题，右边文心咨询按钮
+        html += '  <div class="drug-detail-header">';
+        html += '    <div>';
+        html += '      <div class="drug-detail-title">' + escapeHtml(name) + '</div>';
+        html += '      <div class="drug-detail-subtitle">批准文号：' + escapeHtml(approval) + '</div>';
+        html += '    </div>';
+        html += '    <button type="button" class="drug-consult-btn">文心健康 · 药物咨询</button>';
+        html += '  </div>';
+
+        // ====== 上半部分：字段网格，尽量展示“所有字段” ======
+        html += '  <div class="drug-detail-grid">';
+
+        function addRow(label, value) {
+          if (value == null || value === '') return;
+          html += '    <div class="drug-detail-row">';
+          html += '      <div class="drug-detail-label">' + escapeHtml(label) + '：</div>';
+          html += '      <div class="drug-detail-value">' + escapeHtml(value) + '</div>';
+          html += '    </div>';
+        }
+
+        var used = {};
+
+        // 1）优先按你关心的字段顺序展示（可以自行增减顺序）
+        var priorityKeys = [
+          '药品名称',
+          '生产企业',
+          '用法用量',
+          '适应症',
+          '禁忌',
+          '副作用',
+          '药品类型',
+          '医保类型',
+          '处方类型',
+          '剂型',
+          '规格',
+          '成分',
+          '性状',
+          '药理作用',
+          '注意事项',
+          '参考价格',
+          '储藏方法'
+        ];
+
+        priorityKeys.forEach(function (key) {
+          if (rawObj.hasOwnProperty(key)) {
+            addRow(key, rawObj[key]);
+            used[key] = true;
+          }
+        });
+
+        // 2）其余所有字段自动补上（保证“信息不丢”）
+        Object.keys(rawObj).forEach(function (key) {
+          if (used[key]) return;           // 已经展示过的跳过
+          if (key === '批准文号') return;  // 已经在顶部副标题里显示
+          addRow(key, rawObj[key]);
+        });
+
+        html += '  </div>'; // end .drug-detail-grid
+
+        // ====== 下半部分：原始 JSON + 复制按钮 ======
+        var prettyJson = JSON.stringify(rawObj, null, 2);
+
+        // 保存给“文心健康 · 药物咨询”用
+        window.__lastDrugJsonForConsult__  = prettyJson;
+        window.__lastDrugNameForConsult__ = name;
+
+        html += '  <div class="drug-detail-raw">';
+        html += '    <div class="drug-detail-raw-header">';
+        html += '      <span>原始 JSON 信息</span>';
+        html += '      <button type="button" class="drug-json-copy-btn">📋 复制</button>';
+        html += '    </div>';
+        html += '    <pre id="drug-json-raw-text">' + escapeHtml(prettyJson) + '</pre>';
+        html += '  </div>';
+
+        html += '</div>';
+        return html;
+      }
+
+      // ========= 全局点击事件：药品名 / 复制 / 文心咨询 =========
+      document.addEventListener('click', function (e) {
+        var target = e.target;
+  
+        // 1) 点药品名称：拉取详情并弹窗
+        if (target.classList.contains('drug-link')) {
+          var drugName = target.getAttribute('data-name') || '';
+  
+          fetch('/drug_detail?name=' + encodeURIComponent(drugName))
+            .then(function (res) { return res.json(); })
+            .then(function (res) {
+              if (!res || res.status !== 200) {
+                layer.msg('获取药品详情失败', {icon: 2, time: 1500});
+                return;
+              }
+              var data = res.data || {};
+              var html = buildDrugDetailHtml(data);
+  
+              var index = layer.open({
+                type: 1,
+                title: '药品详细信息 - ' + (data['药品名称'] || drugName),
+                area: ['900px', '620px'],
+                shadeClose: true,
+                maxmin: true,
+                content: html
+              });
+
+              // 记录当前药品详情弹框的 index，供“文心健康 · 药物咨询”时关闭
+              window.__drugDetailLayerIndex__ = index;
+
+            })
+            .catch(function (err) {
+              console.error(err);
+              layer.msg('接口异常：' + err, {icon: 2, time: 2000});
+            });
+  
+          return;
+        }
+  
+        // 2) 黑框 JSON 复制
+        if (target.classList.contains('drug-json-copy-btn')) {
+          var pre = document.getElementById('drug-json-raw-text');
+          if (!pre) return;
+          var text = pre.innerText || pre.textContent || '';
+  
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function () {
+              layer.msg('JSON 已复制到剪贴板', {icon: 1, time: 1200});
+            }).catch(function () {
+              layer.msg('复制失败，请手动选择复制', {icon: 2, time: 1500});
+            });
+          } else {
+            var temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            try { document.execCommand('copy'); } catch (err) {}
+            document.body.removeChild(temp);
+            layer.msg('JSON 已复制到剪贴板', {icon: 1, time: 1200});
+          }
+          return;
+        }
+  
+        // 3) 文心健康 · 药物咨询
+        // 3) 文心健康 · 药物咨询
+        if (target.classList.contains('drug-consult-btn')) {
+          var jsonText = window.__lastDrugJsonForConsult__ || '';
+          var drugName = window.__lastDrugNameForConsult__ || '';
+
+          if (!jsonText) {
+            layer.msg('暂未获取到药品信息', {icon: 0, time: 1500});
+            return;
+          }
+
+          // 1）关闭当前的“药品详情”弹框
+          if (typeof window.__drugDetailLayerIndex__ === 'number') {
+            layer.close(window.__drugDetailLayerIndex__);
+            window.__drugDetailLayerIndex__ = null;
+          }
+
+          // 2）打开文心助手右侧弹窗
+          var overlay = document.getElementById('assistant-modal-overlay');
+          if (overlay) {
+            overlay.style.display = 'flex';
+          }
+
+          // 3）构造要发给助手的文本
+          var messageText =
+            '下面是药品【' + drugName + '】的说明书关键信息，请你从医生/药师视角给出用药风险提示、禁忌和注意事项说明：\n\n'
+            + jsonText;
+
+          // 4）通过 postMessage 把文本发给 iframe（/chat_embed 页面）
+          var iframe = document.querySelector('#assistant-modal iframe');
+          if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage(
+              {
+                type: 'drug_consult',
+                text: messageText
+              },
+              '*'
+            );
+          } else {
+            // 如果 iframe 未准备好，给个提示（或者做重试逻辑）
+            layer.msg('文心健康助手尚未加载完成，请稍后重试', {icon: 0, time: 1500});
+          }
+        }
+
+      });
+    });
+  </script>
+  
+
+  <!-- 回填 query + 文心助手弹窗控制 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // 回填搜索词
+      var params = new URLSearchParams(window.location.search);
+      var q = params.get('query');
+      if (q) {
+        var input = document.getElementById('search-input');
+        if (input) input.value = q;
+      }
+
+      // 文心助手弹窗
+      var openBtn   = document.getElementById('assistant-open-btn');
+      var overlay   = document.getElementById('assistant-modal-overlay');
+      var modal     = document.getElementById('assistant-modal');
+      var closeBtn  = document.getElementById('assistant-modal-close');
+      var resizeBtn = document.getElementById('assistant-modal-resize');
+
+      if (openBtn && overlay && closeBtn && modal && resizeBtn) {
+        openBtn.addEventListener('click', function () {
+          overlay.style.display = 'flex';
+        });
+        closeBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          overlay.style.display = 'none';
+        });
+        overlay.addEventListener('click', function (e) {
+          if (e.target === overlay) overlay.style.display = 'none';
+        });
+
+        // normal -> large -> full -> normal
+        resizeBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var current = modal.getAttribute('data-size') || 'normal';
+          var next = current === 'normal' ? 'large' : (current === 'large' ? 'full' : 'normal');
+          modal.setAttribute('data-size', next);
+          modal.classList.remove('assistant-modal-large', 'assistant-modal-full');
+          if (next === 'large') modal.classList.add('assistant-modal-large');
+          else if (next === 'full') modal.classList.add('assistant-modal-full');
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>
