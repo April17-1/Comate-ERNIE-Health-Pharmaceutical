@@ -14,6 +14,11 @@
 
 项目采用经典的 MVC 架构，代码结构清晰，功能模块划分合理，具有良好的扩展性。
 
+🌐系统界面
+<img width="1910" height="930" alt="3cf9efcb-cc0f-4f40-bbaa-1c0f4cc2e757" src="https://github.com/user-attachments/assets/148d3c77-7140-411c-b943-ead8d014b9a0" />
+
+🧠文心健康助手
+<img width="1910" height="930" alt="image" src="https://github.com/user-attachments/assets/946c1809-b983-4f2f-92bb-450ba20bec8b" />
 
 
 # 🚀快速部署：
