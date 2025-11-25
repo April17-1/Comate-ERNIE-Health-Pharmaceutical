@@ -78,5 +78,5 @@ https://github.com/PaddlePaddle/FastDeploy/blob/develop/docs/zh/supported_models
  * Running on http://10.8.12.103:5000
    Press CTRL+C to quit
 
-
+部署与介绍视频链接：https://live.csdn.net/v/502421?spm=1001.2014.3001.5501
 
