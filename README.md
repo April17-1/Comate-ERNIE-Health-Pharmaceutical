@@ -78,5 +78,88 @@ https://github.com/PaddlePaddle/FastDeploy/blob/develop/docs/zh/supported_models
  * Running on http://10.8.12.103:5000
    Press CTRL+C to quit
 
+
+# 视频介绍
+
 部署与介绍视频链接：https://live.csdn.net/v/502421?spm=1001.2014.3001.5501
+
+
+# Comate赋能
+
+## 项目分析
+
+最新版的Comate推出了一个不错的功能，即项目整体分析，这是当前很多大模型面对结构复杂项目分析的瓶颈，但是Comate已经将其应用到代码实现中，效果还不错...
+
+![image-20251125160927202](G:/BLOG/source/_posts/picture/image-20251125160927202.png)
+
+![image-20251125155539037](G:/BLOG/source/_posts/picture/image-20251125155539037.png)
+
+
+
+## 核心功能
+
+这里对项目的核心功能进行梳理总结，向用户快速总结项目的核心功能...
+
+![image-20251125155629823](G:/BLOG/source/_posts/picture/image-20251125155629823.png)
+
+
+
+## 整体架构
+
+Comate这个板块的分析结果包括技术栈、架构层次、核心模块职责、这些功能可以..
+
+![image-20251125155833200](G:/BLOG/source/_posts/picture/image-20251125155833200.png)
+
+![image-20251125155928131](G:/BLOG/source/_posts/picture/image-20251125155928131.png)
+
+
+
+## 数据分析
+
+这个板块的内容Comate分析了数据的实体信息，中间件数据的格式及信息，可以帮助开发者..
+
+![image-20251125155947140](G:/BLOG/source/_posts/picture/image-20251125155947140.png)
+
+
+
+## 业务流程
+
+Comate对项目流程与逻辑关联把握能力很强，可以依据代码从各个角度切分，进行流程分析，
+
+**关键算法**：
+
+1. **jieba分词**：将查询词拆分为语义单元
+2. **正则匹配**：MongoDB `$regex` 查询
+3. 相似度计算：
+   - 优先使用"有序公共子集"匹配
+   - 回退到Levenshtein距离算法
+4. **排序策略**：相似度分数从低到高（越小越相似）
+
+![image-20251125160527765](G:/BLOG/source/_posts/picture/image-20251125160527765.png)
+
+
+
+![image-20251125160637925](G:/BLOG/source/_posts/picture/image-20251125160637925.png)
+
+
+
+![image-20251125160652142](G:/BLOG/source/_posts/picture/image-20251125160652142.png)
+
+
+
+## 开发辅助功能
+
+在开发功能API函数过程中，Comate在脚本中嵌入代码解释、函数注释、调优建议等功能，帮助开发者更好地生成优质代码，更加轻松地理解优质代码，对代码进行快速测试优化...
+
+
+
+![image-20251125161354292](G:/BLOG/source/_posts/picture/image-20251125161354292.png)
+
+
+
+
+
+
+
+
 
